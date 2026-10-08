@@ -4,9 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.AndroidEmbeddedExternalSurface
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,11 +25,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SimpleMedia3Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Surface {
+                    Column(modifier= Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center){
+                        VideoSurface(modifier = Modifier.fillMaxWidth().aspectRatio(16.0f / 9.0f))
+                    }
                 }
             }
         }
@@ -31,17 +37,25 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun VideoSurface(modifier: Modifier = Modifier) {
+    AndroidEmbeddedExternalSurface(modifier = modifier) {
+        onSurface { surface, width, height ->
+            // when the surface is ready send it to exoplayer
+            surface.onDestroyed {
+                // tell exoplayer to destroy it
+            }
+        }
+
+
+    }
+
+
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun VideoSurfacePreview() {
     SimpleMedia3Theme {
-        Greeting("Android")
+        VideoSurface()
     }
 }
